@@ -1,0 +1,184 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "MyMap.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
+    "fileStates": {
+        "../map2/terrain.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        ":/automap-tiles.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/hadil/Downloads/Zombie Apocalypse Tileset/Zombie Apocalypse Tileset/sans titre.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1403,
+                "y": 261
+            }
+        },
+        "Food.tsx": {
+            "scaleInDock": 1
+        },
+        "House.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.33
+        },
+        "Lights.tsx": {
+            "scaleInDock": 0.33
+        },
+        "MyMap.tmx": {
+            "expandedObjectLayers": [
+                28,
+                11,
+                5,
+                12,
+                9,
+                18,
+                14
+            ],
+            "scale": 0.33,
+            "selectedLayer": 9,
+            "viewCenter": {
+                "x": 8377.272727272728,
+                "y": -953.030303030303
+            }
+        },
+        "Player.tsx": {
+            "scaleInDock": 1
+        },
+        "Weapons.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "bancs.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.33
+        },
+        "barricades.tsx": {
+            "scaleInDock": 1
+        },
+        "cars.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.015625,
+            "scaleInEditor": 0.75
+        },
+        "objects.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objets.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 0.0625
+        },
+        "path.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "paths.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "patterns.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "plants.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 0.12
+        },
+        "portals.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "roofs.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 0.33
+        },
+        "sans titre.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 4246,
+                "y": 1295.3333333333333
+            }
+        },
+        "terrain.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.5,
+            "scaleInEditor": 0.33
+        },
+        "terrain1.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "trash.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "wall.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 0.33
+        },
+        "walls.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/hadil/IdeaProjects/PCO_Project/assets/map/Player",
+    "map.height": 70,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 128,
+    "map.tileWidth": 128,
+    "map.width": 90,
+    "openFiles": [
+        "cars.tsx",
+        "roofs.tsx",
+        "plants.tsx",
+        "wall.tsx",
+        "MyMap.tmx",
+        "objets.tsx",
+        "terrain1.tsx",
+        "trash.tsx",
+        "Weapons.tsx"
+    ],
+    "project": "",
+    "property.type": "bool",
+    "recentFiles": [
+        "cars.tsx",
+        "roofs.tsx",
+        "plants.tsx",
+        "wall.tsx",
+        "Weapons.tsx",
+        "trash.tsx",
+        "terrain1.tsx",
+        "objets.tsx",
+        "MyMap.tmx",
+        "C:/Users/hadil/Downloads/Zombie Apocalypse Tileset/Zombie Apocalypse Tileset/sans titre.tmx",
+        "path.tsx",
+        "terrain.tsx"
+    ],
+    "resizeMap.removeObjects": true,
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}
