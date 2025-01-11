@@ -15,7 +15,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import pco.project.game.ConstantVar;
+import pco.project.game.GlobalConstant;
 import pco.project.game.MyGame;
 import pco.project.game.playerPack.Player;
 import pco.project.game.zombiePack.ZombieManager;
@@ -26,7 +26,7 @@ public class MyGameScreen implements Screen {
     private final OrthographicCamera gamecam;
     private final FitViewport viewport; //to ensure the correct viewport
     private final TiledMap map;
-    protected final TmxMapLoader mapLoader;
+
     private final OrthogonalTiledMapRenderer renderer;
 
     private final World world;
@@ -44,8 +44,7 @@ public class MyGameScreen implements Screen {
         //set in up the camera to zoom on the map
         gamecam = new OrthographicCamera();
 
-
-        mapLoader = new TmxMapLoader();
+        TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("map/Tilesets/MyMap.tmx");
         mapHeight = map.getProperties().get("height", Integer.class) * 128;
         mapWidth = map.getProperties().get("width", Integer.class) * 128;
@@ -62,8 +61,10 @@ public class MyGameScreen implements Screen {
         player = new Player(world);
         gamecam.position.set(player.body.getPosition().x, player.body.getPosition().y, 0f);
 
-        listeDeZombie = new ZombieManager(world, 100, player, game.batch);
+        listeDeZombie = new ZombieManager(world, 20, player, game.batch);
         Gdx.app.log("FPS", "Current FPS: " + Gdx.graphics.getFramesPerSecond());
+//        initializeFoodobj();
+//        cacheTextureObjects();
     }
 
     @Override
@@ -161,13 +162,13 @@ public class MyGameScreen implements Screen {
                         if (properties.get("Collidable", Boolean.class) != null && properties.get("Collidable", Boolean.class)) {
                             //System.out.println("i am here ");
                             createBox2dCollision(objectX, objectY, objectWidth, objectHeight, rotation);
-                            fdef.filter.categoryBits = ConstantVar.CATEGORY_OBJECT; // Category for objects
-                            fdef.filter.maskBits = ConstantVar.CATEGORY_PLAYER;
+                            fdef.filter.categoryBits = GlobalConstant.CATEGORY_OBJECT; // Category for objects
+                            fdef.filter.maskBits = GlobalConstant.CATEGORY_PLAYER;
                         }
                         else if (properties.get("Pickable", Boolean.class) != null && properties.get("Pickable", Boolean.class)) {
                             createBox2dCollision(objectX, objectY, objectWidth, objectHeight, rotation);
-                            fdef.filter.categoryBits = ConstantVar.CATEGORY_FOOD; // Category for objects
-                            fdef.filter.maskBits = ConstantVar.CATEGORY_PLAYER;
+                            fdef.filter.categoryBits = GlobalConstant.CATEGORY_FOOD; // Category for objects
+                            fdef.filter.maskBits = GlobalConstant.CATEGORY_PLAYER;
                         }
 
                         game.batch.draw(region, objectX, objectY, // Adjusted position for rotation origin
@@ -274,9 +275,9 @@ public class MyGameScreen implements Screen {
                     if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                         // Pick the object: Remove it temporarily and increase health
                         properties.put("Available", false); // Mark as unavailable
-                        player.increaseHealth(); // Adjust health increment if needed
-                        player.healthRender(game.batch);
-                        // Schedule reappearance after a delay (e.g., 5 seconds)
+                        player.increaseHealth(); // Adjust health increment
+                        //player.healthRender(game.batch);
+                        // Schedule reappearance after a delay 5 seconds
                         scheduleReappearance(object, 5f);
                     }
                 }
@@ -327,4 +328,7 @@ public class MyGameScreen implements Screen {
 
     //public void setScreen(Screen screen);
 }
+
+
+
 

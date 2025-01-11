@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.Input;
 import lombok.Getter;
-import pco.project.game.ConstantVar;
+import pco.project.game.GlobalConstant;
 
 public class Player extends Sprite {
 
@@ -41,13 +41,13 @@ public class Player extends Sprite {
         wlkTime = 0f;
         definePlayer();
         currentState = PlayerEnum.IDLE;
-        this.setBounds(0, 0, ConstantVar.PlayerWidth, ConstantVar.PlayerHeight);
+        this.setBounds(0, 0, GlobalConstant.PlayerWidth, GlobalConstant.PlayerHeight);
         initAnim();
     }
 
     public void definePlayer(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(ConstantVar.PosInitX, ConstantVar.PosInitY);
+        bdef.position.set(GlobalConstant.PosInitX, GlobalConstant.PosInitY);
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.bullet = true;
         body = world.createBody(bdef);
@@ -59,8 +59,8 @@ public class Player extends Sprite {
         shape.setRadius(0.15f);
         fdef.shape = shape;
         fdef.isSensor = false;
-        fdef.filter.categoryBits = ConstantVar.CATEGORY_PLAYER; // Category for player
-        fdef.filter.maskBits = ConstantVar.CATEGORY_OBJECT | ConstantVar.CATEGORY_ZOMBIE;
+        fdef.filter.categoryBits = GlobalConstant.CATEGORY_PLAYER; // Category for player
+        fdef.filter.maskBits = GlobalConstant.CATEGORY_OBJECT | GlobalConstant.CATEGORY_ZOMBIE;
 
         body.createFixture(fdef);
         body.setAngularDamping(10f);
@@ -68,17 +68,16 @@ public class Player extends Sprite {
 
         shape.dispose();
 
-        playerSprite.setSize(ConstantVar.PlayerWidth, ConstantVar.PlayerHeight);
+        playerSprite.setSize(GlobalConstant.PlayerWidth, GlobalConstant.PlayerHeight);
     }
 
 
     public void takeDamage(SpriteBatch batch) {
         currentHealth -= 1;
         if (currentHealth > 1) {
-            healthCurrentFrame = atlas.findRegion("health", 8-currentHealth);
+            healthCurrentFrame = atlas.findRegion("health", maxHealth - (currentHealth - 1));
             //healthRender(batch);
-        }
-        else {
+        } else {
             isDead = true;
             die();
         }
@@ -88,6 +87,8 @@ public class Player extends Sprite {
         currentHealth += 1;
         if (currentHealth > maxHealth) {
             currentHealth = maxHealth; // Cap health to the maximum value
+        } else {
+            healthCurrentFrame = atlas.findRegion("health", maxHealth - currentHealth + 1);
         }
     }
 

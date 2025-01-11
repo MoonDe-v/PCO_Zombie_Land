@@ -1,8 +1,6 @@
 package pco.project.game;
 
-import com.badlogic.gdx.Gdx;
-
-public final class ConstantVar {
+public final class GlobalConstant {
 
     public static final float MapWidth = 8960f;
     public static final float MapHeight = 6400f;
@@ -18,5 +16,5 @@ public final class ConstantVar {
     public static final short CATEGORY_ZOMBIE = 0x0005;
     public static final float DELTA_TIME = 1f;
 
-    private ConstantVar(){};
+    private GlobalConstant(){};
 }

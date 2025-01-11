@@ -16,6 +16,7 @@ public class ZombieFlyWeight {
     private ZombieFlyWeight() {
         // Load shared resources here
         atlas = new TextureAtlas("map/Atls_zombie/Zombie_1.atlas");
+
         zombieGroan = Gdx.audio.newSound(Gdx.files.internal("Zsounds/zombie_groan.ogg"));
         // Walking animation
         Array<TextureRegion> walking = new Array<>();
@@ -53,6 +54,10 @@ public class ZombieFlyWeight {
         return atlas;
     }
 
+    public Sound getZombieGroan() {
+        return zombieGroan;
+    }
+
     public Animation<TextureRegion> getWalkingAnim() {
         return walkingAnim;
     }
@@ -67,5 +72,6 @@ public class ZombieFlyWeight {
 
     public void dispose() {
         atlas.dispose();
+        zombieGroan.dispose();
     }
 }

@@ -285,24 +285,19 @@
 
 package pco.project.game.zombiePack;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import pco.project.game.ConstantVar;
+import pco.project.game.GlobalConstant;
 import pco.project.game.playerPack.Player;
-import com.badlogic.gdx.audio.Sound;
 
 public class Zombie extends Sprite {
 
+    private static ZombieFlyWeight zombieFlyWeight;
     private Sprite zombieSprite;
-    private ZombieFlyWeight zombieFlyWeight;
     public World world;
     public Body body;
     private TextureRegion zombieStand;
@@ -318,22 +313,22 @@ public class Zombie extends Sprite {
     float lastAttackTime = 0f, speed = 2f; // Zombie movement speed
     int  zombieHealth;
     private int score;
-    private Sound zombieGroan;
 
-    public Zombie(World world, Player player) {
+
+    public Zombie(World world, Player player, ZombieFlyWeight zombieFlyWeight) {
         this.world = world;
         this.player = player;
         zmbStateEnum = ZombieState.PATROLLING;
-        atlas = new TextureAtlas("map/Atls_zombie/Zombie_1.atlas");
-        zombieStand = new TextureRegion(atlas.findRegion("walk", 1));
-        zombieSprite = new Sprite(zombieStand);
-        currentFrame = zombieStand;
+
+        this.zombieFlyWeight = ZombieFlyWeight.getInstance();
+        this.zombieSprite = new Sprite(zombieFlyWeight.getAtlas().findRegion("walk", 1));
+        currentFrame = zombieFlyWeight.getWalkingAnim().getKeyFrame(wlkTime, true);
         wlkTime = 0f;
         playerPos = player.body.getPosition();
         zombieHealth = 2; //each zombie die within 2 stabs
 
-        this.setBounds(0, 0, ConstantVar.ZombieWidth, ConstantVar.ZombieHeight);
-        initAnim();
+        this.setBounds(0, 0, GlobalConstant.ZombieWidth, GlobalConstant.ZombieHeight);
+       // initAnim();
 
         //init of the sound
         //zombieGroan = Gdx.audio.newSound(Gdx.files.internal("Zsounds/zombie_groan.ogg"));
@@ -352,58 +347,23 @@ public class Zombie extends Sprite {
         shape.setRadius(0.1f);
         fdef.shape = shape;
         fdef.isSensor = false;
-        fdef.filter.categoryBits = ConstantVar.CATEGORY_ZOMBIE; // Category for zombie
-        fdef.filter.maskBits = ConstantVar.CATEGORY_OBJECT | ConstantVar.CATEGORY_PLAYER;
+        fdef.filter.categoryBits = GlobalConstant.CATEGORY_ZOMBIE; // Category for zombie
+        fdef.filter.maskBits = GlobalConstant.CATEGORY_OBJECT | GlobalConstant.CATEGORY_PLAYER;
 
         body.createFixture(fdef);
         body.setAngularDamping(10f);
 
         shape.dispose();
-        zombieSprite.setSize(ConstantVar.ZombieWidth, ConstantVar.ZombieHeight);
+        zombieSprite.setSize(GlobalConstant.ZombieWidth, GlobalConstant.ZombieHeight);
 
         // Set an initial random target position within the patrol area
         patrolCenter = position;
         targetPos = generateRandomTarget(patrolCenter, patrolAreaRadius);
     }
 
-    public void initAnim() {
-        //walking with a knife anime
-        Array<TextureRegion> walking = new Array<>();
-        for (int i = 1; i < 7; i++) {
-            walking.add(atlas.findRegion("walk", i));
-        }
-        walkingAnim = new Animation<>(0.2f, walking);
-        walkingAnim.setPlayMode(Animation.PlayMode.LOOP);
-
-        //stabbing with a knif anim
-        Array<TextureRegion> attacking = new Array<TextureRegion>();
-
-        for (int i = 1; i < 7; i++) { // 19: thz size of regions of the player
-            attacking.add(atlas.findRegion("attack", i));
-        }
-        attackingAnim = new Animation<>(0.2f, attacking);
-        attackingAnim.setPlayMode(Animation.PlayMode.LOOP);
-
-        //Walking with shootgun anim
-        Array<TextureRegion> dead = new Array<TextureRegion>();
-
-        for (int i = 1; i < 5; i++) { // 19: thz size of regions of the player
-            dead.add(atlas.findRegion("dead", i));
-        }
-        deadAnim = new Animation<>(0.2f, dead);
-        deadAnim.setPlayMode(Animation.PlayMode.NORMAL);
-    }
-
-    public void zTakeDamage() {
-        zombieHealth -= 1;
-        if (zombieHealth <= 0) {
-            die();
-        }
-    }
-
     public void die() {
         zmbStateEnum = ZombieState.DEAD;
-        currentFrame = deadAnim.getKeyFrame(wlkTime, true);
+        currentFrame = zombieFlyWeight.getDeadAnim().getKeyFrame(wlkTime, true);
         body.setActive(false);
     }
 
@@ -429,6 +389,13 @@ public class Zombie extends Sprite {
         }
     }
 
+    public void zTakeDamage() {
+        zombieHealth -= 1;
+        if (zombieHealth <= 0) {
+            die();
+        }
+    }
+
     private void attackPlayer(Vector2 playerPos) {
         speed = 3f; // Zombie movement speed
         Vector2 currentPos = body.getPosition();
@@ -437,7 +404,7 @@ public class Zombie extends Sprite {
         Vector2 velocity = direction.scl(attackSpeed);
 
         body.setLinearVelocity(velocity); // Move toward the player
-        currentFrame = attackingAnim.getKeyFrame(wlkTime, true); // Set attack animation
+        currentFrame = zombieFlyWeight.getAttackingAnim().getKeyFrame(wlkTime, true); // Set attack animation
 
     }
 
@@ -514,26 +481,27 @@ public class Zombie extends Sprite {
 //        }
         if (zmbStateEnum == ZombieState.DEAD) {
             // No updates for dead zombie
-            currentFrame = deadAnim.getKeyFrame(wlkTime, false);
+            currentFrame = zombieFlyWeight.getDeadAnim().getKeyFrame(wlkTime, false);
             score += 1;
         }
         else {
-            currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
+            currentFrame = zombieFlyWeight.getWalkingAnim().getKeyFrame(wlkTime, true);
             switch (zmbStateEnum) {
                 case PATROLLING:
                     if (distToPlayer <= attackRange) {
                         zmbStateEnum = ZombieState.CHASING;
                     } else {
                         patrolling(dt);
-                        currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
+                        currentFrame = zombieFlyWeight.getWalkingAnim().getKeyFrame(wlkTime, true);
                     }
                     break;
                 case CHASING:
                     if (distToPlayer > chaseRange || player.isDead()) {
                         zmbStateEnum = ZombieState.RETURNING;
                     } else {
+                        // System.out.println("zombie attacks the player"); // DEBUG
                         attackPlayer(playerPos);
-                        System.out.println("zombie attacks the player");
+                        zombieFlyWeight.getZombieGroan().play(0.5f);
 //                        if (body.getPosition().dst(player.body.getPosition()) < 0.1f) {
 //                            player.takeDamage(batch);
 //                        }
@@ -559,6 +527,6 @@ public class Zombie extends Sprite {
     }
 
     public void dispose() {
-        atlas.dispose();
+        zombieFlyWeight.dispose();
     }
 }
