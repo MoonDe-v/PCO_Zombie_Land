@@ -57,9 +57,9 @@ The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat`
    ```
 
 ### Running the Game with a JAR File:
-You can also run the game using the compiled JAR file. Download it from this [link](https://drive.google.com/file/d/1q8nRSB7EKnuLfhYl6v2KCpuYTd1iIjCG/view?usp=drive_link), then execute:
+You can also run the game using the compiled JAR file. Download it from this [link](https://drive.google.com/file/d/1jKYkUzSE-6xvOBCAVHdoINtucQnTNjSR/view?usp=drive_link), then execute:
 ```bash
-java -jar compiledgame.jar
+java -jar Zombie_Land_Game.jar
 ```
 
 ### Creating an Executable JAR
