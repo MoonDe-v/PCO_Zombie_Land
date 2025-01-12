@@ -12,7 +12,6 @@ import pco.project.game.GlobalConstant;
 import pco.project.game.playerPack.Player;
 
 public class Zombie extends Sprite {
-
     private static ZombieFlyWeight zombieFlyWeight;
     private Sprite zombieSprite;
     public World world;
@@ -177,13 +176,24 @@ public class Zombie extends Sprite {
     }
 
     //meth to verify if the player is facing the zombie while he shoots
-    public boolean isFacingZombie(Vector2 zombiePos) {
-        Vector2 toZombie = zombiePos.cpy().sub(body.getPosition()).nor();
+    public boolean isFacingZombie(Vector2 playerPos) {
+        Vector2 zombiePos = body.getPosition(); // Position du zombie
 
-        // Calculate the dot product
-        //float dotProduct = player.getFacingDirection().dot(toZombie);
+        // Calculer le vecteur entre le joueur et le zombie
+        Vector2 toZombie = zombiePos.cpy().sub(playerPos);
 
-        return true; // Threshold for "facing" (1.0 = exact, lower = more lenient)
+        // Si les positions sont identiques, on considère qu'il est "facing"
+        if (toZombie.isZero()) {
+            return true;
+        }
+
+        // Normalise le vecteur
+        toZombie.nor();
+
+        // Produit scalaire entre la direction du joueur et le vecteur vers le zombie
+        float dotProduct = player.getFacingDirection().dot(toZombie);
+
+        return dotProduct > 0.4f; // Seuil pour déterminer si le joueur fait face au zombie
     }
 
     public void render(SpriteBatch batch) {
@@ -200,14 +210,11 @@ public class Zombie extends Sprite {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public void update(float dt) {
         wlkTime += dt;
         float distToPlayer = body.getPosition().dst(playerPos);
-
 
         if (zmbStateEnum == ZombieState.DEAD) {
             // No updates for dead zombie

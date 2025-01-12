@@ -45,6 +45,7 @@ public class Player extends Sprite {
         currentState = PlayerEnum.IDLE;
         this.setBounds(0, 0, GlobalConstant.PlayerWidth, GlobalConstant.PlayerHeight);
         initAnim();
+        facingDirection = PlayerDirections.RIGHT;
     }
 
     public void definePlayer(){
@@ -67,12 +68,10 @@ public class Player extends Sprite {
         body.createFixture(fdef);
         body.setAngularDamping(10f);
 
-
         shape.dispose();
 
         playerSprite.setSize(GlobalConstant.PlayerWidth, GlobalConstant.PlayerHeight);
     }
-
 
     public void takeDamage(SpriteBatch batch) {
         currentHealth -= 1;
@@ -99,11 +98,9 @@ public class Player extends Sprite {
             body.getPosition().x - 0.3f,
             body.getPosition().y + 0.3f,
             0.5f, 0.1f); //
-
     }
 
-    //the player direction
-
+    // The player direction
     public void updateFacingDirection() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -131,7 +128,6 @@ public class Player extends Sprite {
     public Vector2 getFacingDirection() {
         return facingDirection.getDirection();
     }
-
 
     public void initAnim() {
         //walking with a knife anime
@@ -166,7 +162,6 @@ public class Player extends Sprite {
         }
         shootingAnim = new Animation<>(0.4f, shootGunFrames);
         shootingAnim.setPlayMode(Animation.PlayMode.NORMAL);
-
     }
 
     public void handleInput(float dt) {
@@ -206,6 +201,10 @@ public class Player extends Sprite {
                 currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
                 playerStand = playerStandKnife;
             }
+        }
+
+        if (isUsignGun) {
+            updateFacingDirection();
         }
 
         // Movement based on arrow keys

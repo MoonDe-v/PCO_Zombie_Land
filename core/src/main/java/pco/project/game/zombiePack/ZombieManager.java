@@ -50,7 +50,6 @@ public class ZombieManager {
         return positionsList;
     }
 
-
     // Use the FlyWeight pattern for zombie creation
     public void createZombies(int nbrDeZomb, World world) {
         com.badlogic.gdx.utils.Array<Vector2> tabDePosValide = arrayOfPos(nbrDeZomb, GlobalConstant.MapWidth, GlobalConstant.MapHeight);
@@ -94,11 +93,12 @@ public class ZombieManager {
                     zombie.zTakeDamage(1);
                 }
             }
-           // System.out.println(zombie.isFacingZombie(zombiePos));
-            if (zombie.isFacingZombie(zombiePos)) {
+
+            // Check if the zombie is close to the player and facing him (for shooting)
+            if (zombie.isFacingZombie(playerPos)) {
                 //verifying if the player is facing the zombie
-                if (player.isShooting() && (distToPlayer < 1f)) {
-                    System.out.println("player shooting and facing");
+                if (player.isShooting() && (distToPlayer < 1.5f)) {
+                    //System.out.println("player shooting and facing"); // Debug
                     zombie.zTakeDamage(2);
                 }
             }
