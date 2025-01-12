@@ -1,5 +1,5 @@
 package pco.project.game.playerPack;
 
 public enum PlayerEnum {
-    WALKING, IDLE, STABBING
+    WALKING, IDLE, STABBING, SHOOTING, ATTACKING
 }

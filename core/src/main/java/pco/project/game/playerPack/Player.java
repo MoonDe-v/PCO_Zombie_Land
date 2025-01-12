@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
@@ -18,23 +19,25 @@ public class Player extends Sprite {
     public World world;
     public Body body;
     private TextureAtlas atlas;
-    private TextureRegion playerStand;
-    private Animation<TextureRegion> walkingAnim, stabbing, shooting, recharging, jumping, running;
+    private TextureRegion playerStand, playerStandKnife, playerStandGun;
+    private Animation<TextureRegion> walkingAnim, stabbing, shootingAnim, walkingGun;
     private float wlkTime;
     private TextureRegion currentFrame, healthCurrentFrame;
     private float rotation, scale;
     private int maxHealth = 8, currentHealth = 8;
     @Getter
-    private boolean isStabbing = false,  isDead = false;
-    private float stabTime = 0f; // Time elapsed for stabbing animation
+    private boolean isStabbing = false,  isDead = false, isShooting = false, isUsingKnife = true, isUsignGun = false;
+    private float stabTime = 0f, shootTime = 0f; // Time elapsed for stabbing animation
     private PlayerEnum currentState;
+    private PlayerDirections facingDirection;
 
 
     public Player(World world) {
         this.world = world;
-        // [survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife, survivor-move_knife]
-        atlas = new TextureAtlas("map/Atls_player/Player_mov.atlas");
-        playerStand = new TextureRegion(atlas.findRegion("survivor-move_knife", 0));
+        atlas = new TextureAtlas("map/Atls_player/Player_atls.atlas");
+        playerStandKnife = new TextureRegion(atlas.findRegion("survivor-move_knife", 0));
+        playerStandGun = new TextureRegion(atlas.findRegion("survivor-move_handgun", 0));
+        playerStand = playerStandKnife;
         playerSprite = new Sprite(playerStand);
         currentFrame = playerStand;
         healthCurrentFrame = new TextureRegion(atlas.findRegion("health", 1));
@@ -99,13 +102,45 @@ public class Player extends Sprite {
             0.5f, 0.1f); //
 
     }
+
+    //the player direction
+
+    public void updateFacingDirection() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                facingDirection = PlayerDirections.UP_LEFT;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                facingDirection = PlayerDirections.UP_RIGHT;
+            } else {
+                facingDirection = PlayerDirections.UP;
+            }
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                facingDirection = PlayerDirections.DOWN_LEFT;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                facingDirection = PlayerDirections.DOWN_RIGHT;
+            } else {
+                facingDirection = PlayerDirections.DOWN;
+            }
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            facingDirection = PlayerDirections.LEFT;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            facingDirection = PlayerDirections.RIGHT;
+        }
+    }
+
+    public Vector2 getFacingDirection() {
+        return facingDirection.getDirection();
+    }
+
+
     public void initAnim() {
         //walking with a knife anime
-        Array<TextureRegion> walkingLeftKnifeFrames = new Array<TextureRegion>();
+        Array<TextureRegion> walkingKnifeFrames = new Array<TextureRegion>();
         for (int i = 0; i < 20; i++) { // 19: thz size of regions of the player
-            walkingLeftKnifeFrames.add(atlas.findRegion("survivor-move_knife", i));
+            walkingKnifeFrames.add(atlas.findRegion("survivor-move_knife", i));
         }
-        walkingAnim = new Animation<>(1f, walkingLeftKnifeFrames);
+        walkingAnim = new Animation<>(1f, walkingKnifeFrames);
         walkingAnim.setPlayMode(Animation.PlayMode.LOOP);
 
         //stabbing with a knif anim
@@ -113,62 +148,27 @@ public class Player extends Sprite {
         for (int i = 0; i < 15; i++) { // 14: thz size of regions of the player
             stabbKnifeFrames.add(atlas.findRegion("survivor-meleeattack_knife", i));
         }
-        stabbing = new Animation<>(0.15f, stabbKnifeFrames);
+        stabbing = new Animation<>(0.1f, stabbKnifeFrames);
         stabbing.setPlayMode(Animation.PlayMode.NORMAL);
 
         //Walking with shootgun anim
-        Array<TextureRegion> walkingGun = new Array<TextureRegion>();
+        Array<TextureRegion> walkingGunFrames = new Array<TextureRegion>();
         for (int i = 0; i < 20; i++) { // 19: thz size of regions of the player
-            walkingGun.add(atlas.findRegion("survivor-move_shotgun", i));
+            walkingGunFrames.add(atlas.findRegion("survivor-move_handgun", i));
         }
-        // TODO: create animation for player
+        walkingGun = new Animation<>(1.4f, walkingGunFrames);
+        walkingGun.setPlayMode(Animation.PlayMode.LOOP);
+
+        // TODO: create gun animation for player
+        //Shooting with a gun
+        Array<TextureRegion> shootGunFrames = new Array<TextureRegion>();
+        for (int i = 0; i < 2; i++) { // 19: thz size of regions of the player
+            shootGunFrames.add(atlas.findRegion("survivor-shoot_handgun", i));
+        }
+        shootingAnim = new Animation<>(0.4f, shootGunFrames);
+        shootingAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
     }
-
-
-//    public void handleInput(float dt) {
-//        float moveSpeed = 10f;
-//
-//        float velX = 0;
-//        float velY = 0;
-//        scale = 0.8f;
-//
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.D) && !isStabbing) {
-//            System.out.println(isStabbing);
-//            isStabbing = true;
-//            stabTime = 1.4f;
-//            currentState = PlayerEnum.STABBING;
-//            body.setLinearVelocity(0, 0);// Stop movement during stabbing
-//            scale = 1f;
-//
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            rotation = 0;
-//            velX = moveSpeed;
-//            //currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
-//            body.setLinearVelocity(moveSpeed, 0);
-//            currentState = PlayerEnum.WALKING;
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            rotation = 180;
-//            velX = -moveSpeed;
-//            //currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
-//            body.setLinearVelocity(-moveSpeed, 0);
-//            currentState = PlayerEnum.WALKING;
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//            rotation = 270;
-//            velY = -moveSpeed;
-//            //currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
-//            currentState = PlayerEnum.WALKING;
-//            body.setLinearVelocity(0, -moveSpeed);
-//        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            rotation = 90;
-//            velY = moveSpeed;
-//            currentState = PlayerEnum.WALKING;
-//            //currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
-//            body.setLinearVelocity(0, moveSpeed);
-//        }else {
-//            body.setLinearVelocity(velX, velY);
-//        }
-//    }
 
     public void handleInput(float dt) {
         float moveSpeed = 10f;
@@ -177,16 +177,41 @@ public class Player extends Sprite {
         scale = 0.8f;
 
         // Input for stabbing action (no change)
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D) && !isStabbing) {
-            //System.out.println(isStabbing);
-            isStabbing = true;
-            //stabTime = 1.4f;
-            currentState = PlayerEnum.STABBING;
-            body.setLinearVelocity(0, 0); // Stop movement during stabbing
-            scale = 1f;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+            System.out.println("D pressed");
+            if (isUsingKnife && !isStabbing) {
+                //System.out.println(isStabbing);
+                isStabbing = true;
+                //stabTime = 1.4f;
+                currentState = PlayerEnum.STABBING;
+                body.setLinearVelocity(0, 0); // Stop movement during stabbing
+                scale = 3f;
+            } else if (isUsignGun && !isShooting) {
+                isShooting = true;
+                //stabTime = 1.4f;
+                currentState = PlayerEnum.SHOOTING;
+                body.setLinearVelocity(0, 0);
+                scale = 0.3f;
+            }
+
         }
 
-        if (!isStabbing) {// Movement based on arrow keys
+        // Handling the used weapon
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            System.out.println("P pressed");
+            isUsingKnife = !isUsingKnife;
+            isUsignGun = !isUsignGun;
+            if (isUsignGun) {
+                currentFrame = walkingGun.getKeyFrame(wlkTime, true);
+                playerStand = playerStandGun;
+            } else {
+                currentFrame = walkingAnim.getKeyFrame(wlkTime, true);
+                playerStand = playerStandKnife;
+            }
+        }
+
+        // Movement based on arrow keys
+        if (!isStabbing && !isShooting) {
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 velX = moveSpeed;
             }
@@ -213,29 +238,51 @@ public class Player extends Sprite {
 
     public void die() {
         body.setActive(false);
-
     }
 
     public void update(float dt) {
         wlkTime += dt;
+
         if (isDead) return;
+
+        // Stabbing animation
         if (isStabbing) {
             stabTime += dt;
+            if (stabbing.isAnimationFinished(stabTime)) {
+                isStabbing = false; // Reset stabbing state after animation finishes
+                currentState = PlayerEnum.IDLE;
+                stabTime = 0f;
+            }
         }
-        if (isStabbing && stabbing.isAnimationFinished(stabTime)) {
-            isStabbing = false; // Reset stabbing state after animation finishes
-            currentState = PlayerEnum.IDLE;
-            stabTime = 0f;
+
+        // Shooting animation
+        if (isShooting) {
+            shootTime += dt;
+            if (shootingAnim.isAnimationFinished(shootTime)) {
+                isShooting = false; // Reset shooting state after animation finishes
+                currentState = PlayerEnum.IDLE;
+                shootTime = 0f;
+            }
         }
-        handleInput(dt);
+
+        //handleInput(dt);
         this.setPosition(body.getPosition().x, body.getPosition().y);
         //takeDamage();
     }
 
     public void render(SpriteBatch batch) {
+        scale = 1.1f;
         TextureRegion currentFrame = switch (currentState) {
-            case WALKING -> walkingAnim.getKeyFrame(wlkTime, true);
-            case STABBING -> stabbing.getKeyFrame(stabTime, true);
+            case WALKING -> isUsingKnife ? walkingAnim.getKeyFrame(wlkTime, true) : walkingGun.getKeyFrame(wlkTime, true);
+            case STABBING -> {
+                scale = 1.45f;
+                yield stabbing.getKeyFrame(stabTime, true);
+            }
+            case SHOOTING -> {
+                scale = 0.95f;
+                yield shootingAnim.getKeyFrame(shootTime, true);
+            }
+
             default -> playerStand;
         };
 
@@ -253,3 +300,5 @@ public class Player extends Sprite {
             atlas.dispose();
     }
 }
+
+
