@@ -24,11 +24,18 @@ The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat`
 - `test`: Runs unit tests if any are defined.
 
 ## How to Run the Game
+- Clone or download the project files.
+
 ### In IntelliJ IDEA:
-1. Clone or download the project files.
-2. Open the project in IntelliJ IDEA.
-3. Ensure necessary dependencies are imported (Gradle should handle this).
-4. Open the `lwjgl3` module and run the `DesktopLauncher` class to start the game.
+1. Open the project in IntelliJ IDEA.
+2. Ensure necessary dependencies are imported (Gradle should handle this).
+3. At the top, click on **"Current File"** and select **"Edit Configurations"**.
+4. Add a new **Application** configuration with the following settings:
+    - **Build and Run**: Choose the correct Java version (>= 21).
+    - **Module**: Select `PCO_Zombie_Land.lwjgl3.main`.
+    - **Main class**: `pco.project.game.lwjgl3.Lwjgl3Launcher`.
+5. Click **OK** to save the configuration.
+6. Finally, use IntelliJ IDEA's **Run** or **Debug** buttons to start the game.
 
 ### Via Terminal:
 1. Open a terminal and navigate to the project directory.
@@ -50,16 +57,27 @@ The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat`
    ```
 
 ### Running the Game with a JAR File:
-You can also run the game using the compiled JAR file. Download it from this [link](lieeen), then execute:
+You can also run the game using the compiled JAR file. Download it from this [link](https://drive.google.com/file/d/1q8nRSB7EKnuLfhYl6v2KCpuYTd1iIjCG/view?usp=drive_link), then execute:
 ```bash
 java -jar compiledgame.jar
+```
+
+### Creating an Executable JAR
+You can create an executable JAR file for the game by running the following command in the terminal:
+```bash
+./gradlew lwjgl3:dist
+```
+
+Once the process is complete, the JAR file will be generated and located in the following directory:
+```bash
+./lwjgl3/build/libs/
 ```
 
 ## Gameplay Overview
 - **Objective**: Survive by killing all zombies to progress through levels.
 - **Weapons**:
-    - **Knife**: Press `'D'` to attack.
-    - **Firearm**: Press `'P'` to switch between weapons.
+    - Press `'P'` to switch between the Knife and the Firearm.
+    - Press `'D'` to attack with the Knife or shoot with the Firearm.
 - **Health**: Collect health items (blood objects) to restore HP.
 - **Movement**: Use the arrow keys to move. Combine directions (e.g., down + right) for diagonal movement.
 - **Zoom**: Zoom in with `'W'` and out with `'X'`.
@@ -67,14 +85,14 @@ java -jar compiledgame.jar
 
 ### Health Items
 You can collect **health items** (blood objects) to restore your health when it drops. These items will be scattered around the map, and you can pick them up by pressing the `'E'` key when near them.  
-![Health Items](/health_item_image.png)
+![Health Items](./assets/sample_health_items.jpg)
 
 ### Important Notes:
 - When starting the game, avoid resizing the first view window, as it may cause the layout (including buttons) to break. The rest of the game scales properly.
 
 ## Image of the UML Diagram
 You can view the UML diagram of the game architecture here:  
-[View UML Diagram](/uml_diagram.png)
+[View UML Diagram](./UMLdiagram/zombie_land_uml_diagaram.jpg)
 
 ## Audio and Sound Effects
 The zombies emit sound effects when they approach or are killed. Make sure your audio is enabled to experience these effects.
