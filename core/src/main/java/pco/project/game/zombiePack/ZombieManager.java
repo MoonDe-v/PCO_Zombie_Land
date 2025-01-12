@@ -12,6 +12,7 @@ import pco.project.game.playerPack.Player;
 import java.util.HashSet;
 
 public class ZombieManager {
+    @Getter
     private Array<Zombie> zombieList;
     private World world;
     private SpriteBatch batch;
@@ -19,7 +20,6 @@ public class ZombieManager {
     @Getter
     private boolean callGameOver = false;
     private float lastAttackTime = 0f;
-
 
     public ZombieManager(World world, int nbrDeZomb, Player player, SpriteBatch batch) {
         this.player = player;

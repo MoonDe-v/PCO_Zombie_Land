@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.TimeUtils;
+import lombok.Getter;
 import pco.project.game.GlobalConstant;
 import pco.project.game.playerPack.Player;
 
@@ -27,9 +29,11 @@ public class Zombie extends Sprite {
     float attackRange = 2f, chaseRange = 3f;
     float lastAttackTime = 0f, speed = 2f; // Zombie movement speed
     int  zombieHealth;
-    private int score;
+    private float lastDamageTime = 0f;
+    private static final float DAMAGE_COOLDOWN = 3.0f; // 500 ms cooldown between damage
+    @Getter
+    private boolean isDead = false;
     //private Vector2 facingDirection = new Vector2();
-
 
     public Zombie(World world, Player player, ZombieFlyWeight zombieFlyWeight) {
         this.world = world;
@@ -82,6 +86,7 @@ public class Zombie extends Sprite {
         zmbStateEnum = ZombieState.DEAD;
         currentFrame = zombieFlyWeight.getDeadAnim().getKeyFrame(wlkTime, true);
         body.setActive(false);
+        isDead = true;
     }
 
     public void patrolling(float deltaTime) {
@@ -106,10 +111,17 @@ public class Zombie extends Sprite {
     }
 
     public void zTakeDamage(int damageTaken) {
-        System.out.println("Zombie health:" + zombieHealth);
-        zombieHealth -= damageTaken;
-        if (zombieHealth <= 0) {
-            die();
+        float currentTime = TimeUtils.nanoTime() / 1000000000f; // Temps en secondes
+
+        // Debug
+        //System.out.println("Current Time: " + currentTime + " | Last Damage Time: " + lastDamageTime);
+        if (currentTime - lastDamageTime >= DAMAGE_COOLDOWN) {
+            zombieHealth -= damageTaken;
+            lastDamageTime = currentTime;
+
+            if (zombieHealth <= 0) {
+                die();
+            }
         }
     }
 
@@ -122,7 +134,6 @@ public class Zombie extends Sprite {
 
         body.setLinearVelocity(velocity); // Move toward the player
         currentFrame = zombieFlyWeight.getAttackingAnim().getKeyFrame(wlkTime, true); // Set attack animation
-
     }
 
     private void returnToPatrolCenter() {
@@ -170,9 +181,9 @@ public class Zombie extends Sprite {
         Vector2 toZombie = zombiePos.cpy().sub(body.getPosition()).nor();
 
         // Calculate the dot product
-        float dotProduct = player.getFacingDirection().dot(toZombie);
+        //float dotProduct = player.getFacingDirection().dot(toZombie);
 
-        return dotProduct > 0.4f; // Threshold for "facing" (1.0 = exact, lower = more lenient)
+        return true; // Threshold for "facing" (1.0 = exact, lower = more lenient)
     }
 
     public void render(SpriteBatch batch) {
@@ -201,7 +212,6 @@ public class Zombie extends Sprite {
         if (zmbStateEnum == ZombieState.DEAD) {
             // No updates for dead zombie
             currentFrame = zombieFlyWeight.getDeadAnim().getKeyFrame(wlkTime, false);
-            score += 1;
         }
         else {
             currentFrame = zombieFlyWeight.getWalkingAnim().getKeyFrame(wlkTime, true);

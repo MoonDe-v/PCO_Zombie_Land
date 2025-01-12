@@ -16,6 +16,7 @@ public final class GlobalConstant {
     public static final short CATEGORY_ZOMBIE = 0x0005;
     public static final float DELTA_TIME = 1f;
     public static final float ZOMBIE_ATTACK_COOLDOWN = 0.05f;
+    public static final int   PlayerCurrentHealth = 8;
 
     private GlobalConstant(){};
 }

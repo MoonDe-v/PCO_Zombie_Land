@@ -14,7 +14,6 @@ import lombok.Getter;
 import pco.project.game.GlobalConstant;
 
 public class Player extends Sprite {
-
     private Sprite playerSprite;
     public World world;
     public Body body;
@@ -24,13 +23,13 @@ public class Player extends Sprite {
     private float wlkTime;
     private TextureRegion currentFrame, healthCurrentFrame;
     private float rotation, scale;
-    private int maxHealth = 8, currentHealth = 8;
+    private final int maxHealth = 8;
+    private int currentHealth = GlobalConstant.PlayerCurrentHealth;
     @Getter
     private boolean isStabbing = false,  isDead = false, isShooting = false, isUsingKnife = true, isUsignGun = false;
     private float stabTime = 0f, shootTime = 0f; // Time elapsed for stabbing animation
     private PlayerEnum currentState;
     private PlayerDirections facingDirection;
-
 
     public Player(World world) {
         this.world = world;
@@ -176,11 +175,11 @@ public class Player extends Sprite {
         float velY = 0;
         scale = 0.8f;
 
-        // Input for stabbing action (no change)
+        // Input for player attacking actions
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            System.out.println("D pressed");
+            //System.out.println("D pressed"); // Debug
             if (isUsingKnife && !isStabbing) {
-                //System.out.println(isStabbing);
+                //System.out.println("isStabbing: " + isStabbing);  // Debug
                 isStabbing = true;
                 //stabTime = 1.4f;
                 currentState = PlayerEnum.STABBING;
@@ -193,12 +192,11 @@ public class Player extends Sprite {
                 body.setLinearVelocity(0, 0);
                 scale = 0.3f;
             }
-
         }
 
         // Handling the used weapon
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            System.out.println("P pressed");
+            //System.out.println("P pressed"); // Debug:
             isUsingKnife = !isUsingKnife;
             isUsignGun = !isUsignGun;
             if (isUsignGun) {

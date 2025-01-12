@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import pco.project.game.GlobalConstant;
 import pco.project.game.MyGame;
 import pco.project.game.playerPack.Player;
+import pco.project.game.zombiePack.Zombie;
 import pco.project.game.zombiePack.ZombieManager;
 
 
@@ -103,7 +104,13 @@ public class MyGameScreen implements Screen {
         clampCameraPosition(mapWidth, mapHeight);
 
         if (listeDeZombie.isCallGameOver()) {
-            game.setScreen(new GameOverScreen(game, 10));
+            int playerScore = 0;
+            for (Zombie zombie : listeDeZombie.getZombieList()) {
+                if (zombie.isDead()) {
+                    playerScore++;
+                }
+            }
+            game.setScreen(new GameOverScreen(game, playerScore));
         }
     }
 
