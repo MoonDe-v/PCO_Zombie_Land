@@ -171,10 +171,6 @@ public class Zombie extends Sprite {
         return new Vector2(x, y);
     }
 
-    private int getScore() {
-        return getScore();
-    }
-
     //meth to verify if the player is facing the zombie while he shoots
     public boolean isFacingZombie(Vector2 playerPos) {
         Vector2 zombiePos = body.getPosition(); // Position du zombie

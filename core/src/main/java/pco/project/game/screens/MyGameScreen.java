@@ -61,7 +61,7 @@ public class MyGameScreen implements Screen {
         player = new Player(world);
         gamecam.position.set(player.body.getPosition().x, player.body.getPosition().y, 0f);
 
-        listeDeZombie = new ZombieManager(world, 20, player, game.batch);
+        listeDeZombie = new ZombieManager(world, 30, player, game.batch);
         Gdx.app.log("FPS", "Current FPS: " + Gdx.graphics.getFramesPerSecond());
 //        initializeFoodobj();
 //        cacheTextureObjects();

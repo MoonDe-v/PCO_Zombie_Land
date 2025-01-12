@@ -78,10 +78,11 @@ public class MainMenu implements Screen {
         Label instructions = new Label(
             "Objective: Kill all Zombies to survive.\n\n" +
                 "Weapons:\n" +
-                " - Knife: Press 'D' to attack\n" +
-                " - Firearm: Press 'P' to switch weapon\n\n" +
+                " - Knife or Firearm:\n" +
+                "   Press 'P' to switch between Knife and Firearm\n" +
+                "   Press 'D' to attack with the Knife or shoot with the Firearm\n\n" +
                 "Health:\n" +
-                " - Collect blood objects to restore HP\n\n" +
+                " - Press 'E' to pick up blood objects and restore HP\\n\n\n" +
                 "Movement:\n" +
                 " - Use the arrow keys to move\n" +
                 " - Move diagonally by combining two directions (e.g. down + right)\n\n" +
