@@ -48,10 +48,9 @@ public class MyGameScreen implements Screen {
         map = mapLoader.load("map/Tilesets/MyMap.tmx");
         mapHeight = map.getProperties().get("height", Integer.class) * 128;
         mapWidth = map.getProperties().get("width", Integer.class) * 128;
-        //viewport = new FitViewport(mapWidth/1000, mapHeight/1000, gamecam);
-        viewport = new FitViewport(Gdx.graphics.getWidth()/128f, Gdx.graphics.getHeight() / 128f, gamecam);
+        viewport = new FitViewport(Gdx.graphics.getWidth() / 128f, Gdx.graphics.getHeight() / 128f, gamecam);
 
-        renderer = new OrthogonalTiledMapRenderer(map, 1/128f);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / 128f);
 
         //box2D
         world = new World(new Vector2(0, 0)/*for gravity*/, true);
@@ -91,11 +90,16 @@ public class MyGameScreen implements Screen {
         handlePickableInteractions(dt);
         world.step(1/60f, 6, 2);
         player.update(dt);
+
+        // Mise à jour de la position de la caméra en fonction du joueur
         gamecam.position.x = player.body.getPosition().x;
         gamecam.position.y = player.body.getPosition().y;
         gamecam.update();
+
         renderer.setView(gamecam);
         listeDeZombie.update(dt);
+
+        // Clamp pour empêcher la caméra de sortir des limites de la carte
         clampCameraPosition(mapWidth, mapHeight);
 
         if (listeDeZombie.isCallGameOver()) {
@@ -204,9 +208,6 @@ public class MyGameScreen implements Screen {
         }
 
         //food rendering
-
-
-
         //game.batch.draw(player.getTexture(), player.getX(), player.getY(), player.getWidth(), player.getHeight());
         //System.out.println(rotList);
         player.render(game.batch);
@@ -220,7 +221,6 @@ public class MyGameScreen implements Screen {
 
         // Translate back to the original position, now with the rotated center
         PolygonShape shape = new PolygonShape();
-        //shape.setAsBox( objWidth/2f, objHeight/2f);
         shape.setAsBox(objWidth / 2f, objHeight / 2f);
 
         //creation of the fixtures
@@ -251,7 +251,6 @@ public class MyGameScreen implements Screen {
         return new Vector2(rotatedX + origin.x, rotatedY + origin.y);
     }
 
-
     //handling the food objects
     private void handlePickableInteractions(float dt) {
         // Iterate over all objects in the food layer
@@ -276,7 +275,7 @@ public class MyGameScreen implements Screen {
                         // Pick the object: Remove it temporarily and increase health
                         properties.put("Available", false); // Mark as unavailable
                         player.increaseHealth(); // Adjust health increment
-                        //player.healthRender(game.batch);
+
                         // Schedule reappearance after a delay 5 seconds
                         scheduleReappearance(object, 5f);
                     }
@@ -297,10 +296,10 @@ public class MyGameScreen implements Screen {
 
     @Override
     public void resize(int width,int height) {
+        viewport.setWorldSize(width / 128f, height / 128f);
         viewport.update(width, height);
         gamecam.position.set(player.body.getPosition().x, player.body.getPosition().y, 0);
         gamecam.update();
-
     }
 
     @Override
@@ -328,7 +327,3 @@ public class MyGameScreen implements Screen {
 
     //public void setScreen(Screen screen);
 }
-
-
-
-
